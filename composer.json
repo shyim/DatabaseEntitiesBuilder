@@ -1,0 +1,24 @@
+{
+  "name": "shyim/database-entities-builder",
+  "description": "Generates simple database entities from doctrine mysql schema",
+  "keywords": [
+    "database",
+    "doctrine",
+    "models",
+    "simple-orm"
+  ],
+  "homepage": "https://github.com/shyim/DatabaseEntitiesBuilder",
+  "license": [
+    "MIT"
+  ],
+  "require": {
+    "php": "^7.1",
+    "nette/php-generator": "^3.1",
+    "doctrine/dbal": "^2.5"
+  },
+  "autoload": {
+    "psr-4": {
+      "Shyim\\DatabaseEntitiesBuilder\\": "src"
+    }
+  }
+}
