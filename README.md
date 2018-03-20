@@ -10,6 +10,7 @@ This package generates simple entities, repository and service from a mysql data
 ## Contra
 
 * Its too simple, so it can't resolve associations or so
+* No validation
 
 
 ## Example Usage
@@ -42,3 +43,7 @@ Delete a entity
 ```
 $cmsRepository->remove($cmsEntity);
 ```
+
+## Integrations
+
+* [Shopware](https://github.com/shyim/ShyimDatabaseEntitiesGenerator)
