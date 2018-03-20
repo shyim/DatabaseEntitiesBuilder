@@ -1,6 +1,6 @@
-# Database Struct Generator
+# Database Entities Generator
 
-This package generates simple structs, repository and service from a mysql database schema.
+This package generates simple entities, repository and service from a mysql database schema.
 
 ## Pro
 
