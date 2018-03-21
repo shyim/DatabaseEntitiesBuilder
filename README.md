@@ -15,6 +15,8 @@ This package generates simple entities, repository and service from a mysql data
 
 ## Example Usage
 
+Example Generated Code: https://gist.github.com/shyim/edc17de35a5896c2a47c8a9eb90541bd
+
 Retrive a entity
 ```
 $cmsEntity = $cmsRepositoy->find($cmsId);
