@@ -2,6 +2,8 @@
 
 namespace Shyim\DatabaseEntitiesBuilder\Services;
 
+use Shyim\DatabaseEntitiesBuilder\Generator;
+use Shyim\DatabaseEntitiesBuilder\Structs\Request;
 use Shyim\DatabaseEntitiesBuilder\Structs\Table;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
@@ -13,19 +15,26 @@ use Nette\PhpGenerator\PhpNamespace;
 class ServiceGenerator
 {
     /**
-     * @param string $namespace
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @param Request $request
      * @param Table $table
      * @return PhpNamespace
      * @author Soner Sayakci <shyim@posteo.de>
      * @throws \Nette\InvalidArgumentException
      */
-    public function generate(string $namespace, Table $table) : PhpNamespace
+    public function generate(Request $request, Table $table) : PhpNamespace
     {
-        $phpNamespace = new PhpNamespace($namespace . '\\' . $table->camelCaseName);
-        $phpNamespace->addUse($namespace . '\AbstractService');
+        $this->request = $request;
+
+        $phpNamespace = new PhpNamespace($request->namespace . '\\' . $table->camelCaseName);
+        $phpNamespace->addUse($request->namespace . '\AbstractService');
 
         $class = $phpNamespace->addClass($table->camelCaseName . 'Service');
-        $class->setExtends($namespace . '\AbstractService');
+        $class->setExtends($request->namespace . '\AbstractService');
         $class->addComment(sprintf('Service for table %s', $table->name));
 
         $class->addProperty('repository')
@@ -38,7 +47,7 @@ class ServiceGenerator
             ->addComment('@param ' . $table->camelCaseName . 'Repository $repository');
 
         $con = $constructor->addParameter('repository');
-        $con->setTypeHint($namespace . '\\' . $table->camelCaseName . '\\' . $table->camelCaseName . 'Repository');
+        $con->setTypeHint($request->namespace . '\\' . $table->camelCaseName . '\\' . $table->camelCaseName . 'Repository');
 
         $this->findBy($table, $class);
         $this->findOneBy($table, $class);
@@ -97,9 +106,14 @@ class ServiceGenerator
     private function findOneBy(Table $table, ClassType $class): void
     {
         $method = $class->addMethod('findOneBy')
-            ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
             ->addComment('@param array $where')
             ->addComment('@return ' . $table->camelCaseName);
+
+        if ($this->request->phpVersion !== Generator::PHP70) {
+            $method
+                ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
+                ->setReturnNullable(true);
+        }
 
         $method->addParameter('where')
             ->setTypeHint('array');
@@ -115,9 +129,14 @@ class ServiceGenerator
     private function find(Table $table, ClassType $class): void
     {
         $method = $class->addMethod('find')
-            ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
             ->addComment('@param ' . $table->primaryColumn->normalizedType . ' $' . $table->primaryColumn->name)
             ->addComment('@return ' . $table->camelCaseName);
+
+        if ($this->request->phpVersion !== Generator::PHP70) {
+            $method
+                ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
+                ->setReturnNullable(true);
+        }
 
         $method->addParameter($table->primaryColumn->name)
             ->setTypeHint($table->primaryColumn->normalizedType);

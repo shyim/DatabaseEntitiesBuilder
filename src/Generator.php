@@ -17,8 +17,8 @@ use RuntimeException;
  */
 class Generator
 {
-    const PHP70 = 'php70';
-    const PHP71 = 'php71';
+    public const PHP70 = 'php70';
+    public const PHP71 = 'php71';
 
     /**
      * @var DatabaseReader
@@ -93,8 +93,8 @@ class Generator
             }
 
             file_put_contents($modelDir . '/' . $table->camelCaseName . '.php', '<?php' . PHP_EOL . PHP_EOL . $this->modelGenerator->generate($request->namespace, $table, $request->phpVersion), LOCK_EX);
-            file_put_contents($modelDir . '/' . $table->camelCaseName . 'Repository.php', '<?php' . PHP_EOL . PHP_EOL . $this->repositoryGenerator->generate($request->namespace, $table), LOCK_EX);
-            file_put_contents($modelDir . '/' . $table->camelCaseName . 'Service.php', '<?php' . PHP_EOL . PHP_EOL . $this->serviceGenerator->generate($request->namespace, $table), LOCK_EX);
+            file_put_contents($modelDir . '/' . $table->camelCaseName . 'Repository.php', '<?php' . PHP_EOL . PHP_EOL . $this->repositoryGenerator->generate($request, $table), LOCK_EX);
+            file_put_contents($modelDir . '/' . $table->camelCaseName . 'Service.php', '<?php' . PHP_EOL . PHP_EOL . $this->serviceGenerator->generate($request, $table), LOCK_EX);
         }
     }
 }

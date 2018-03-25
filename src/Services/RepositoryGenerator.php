@@ -2,6 +2,8 @@
 
 namespace Shyim\DatabaseEntitiesBuilder\Services;
 
+use Shyim\DatabaseEntitiesBuilder\Generator;
+use Shyim\DatabaseEntitiesBuilder\Structs\Request;
 use Shyim\DatabaseEntitiesBuilder\Structs\Table;
 use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\PhpNamespace;
@@ -14,20 +16,27 @@ use Nette\PhpGenerator\PhpNamespace;
 class RepositoryGenerator
 {
     /**
-     * @param string $namespace
+     * @var Request
+     */
+    private $request;
+
+    /**
+     * @param Request $request
      * @param Table $table
      * @return PhpNamespace
      * @author Soner Sayakci <shyim@posteo.de>
      * @throws \Nette\InvalidArgumentException
      */
-    public function generate(string $namespace, Table $table): PhpNamespace
+    public function generate(Request $request, Table $table): PhpNamespace
     {
-        $phpNamespace = new PhpNamespace($namespace . '\\' . $table->camelCaseName);
-        $phpNamespace->addUse($namespace . '\AbstractRepository');
+        $this->request = $request;
+
+        $phpNamespace = new PhpNamespace($request->namespace . '\\' . $table->camelCaseName);
+        $phpNamespace->addUse($request->namespace . '\AbstractRepository');
         $phpNamespace->addUse('Doctrine\DBAL\Connection');
 
         $class = $phpNamespace->addClass($table->camelCaseName . 'Repository');
-        $class->setExtends($namespace . '\AbstractRepository');
+        $class->setExtends($request->namespace . '\AbstractRepository');
         $class->addComment(sprintf('Repository for table %s', $table->name));
         $class->addConstant('TABLE', $table->name)
             ->addComment('Table name')
@@ -138,9 +147,14 @@ return $records;'
     private function findOneBy(Table $table, ClassType $class)
     {
         $method = $class->addMethod('findOneBy')
-            ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
             ->addComment('@param array $where')
             ->addComment('@return ' . $table->camelCaseName);
+
+        if ($this->request->phpVersion !== Generator::PHP70) {
+            $method
+                ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
+                ->setReturnNullable(true);
+        }
 
         $method->addParameter('where')
             ->setTypeHint('array');
@@ -173,9 +187,14 @@ return $this->getEntityFromDatabaseArray($result);'
     private function find(Table $table, ClassType $class)
     {
         $method = $class->addMethod('find')
-            ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
             ->addComment('@param ' . $table->primaryColumn->normalizedType . ' $' . $table->primaryColumn->name)
             ->addComment('@return ' . $table->camelCaseName);
+
+        if ($this->request->phpVersion !== Generator::PHP70) {
+            $method
+                ->setReturnType($class->getNamespace()->getName() . '\\' . $table->camelCaseName)
+                ->setReturnNullable(true);
+        }
 
         $method->addParameter($table->primaryColumn->name)
             ->setTypeHint($table->primaryColumn->normalizedType);

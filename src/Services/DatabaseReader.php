@@ -35,7 +35,7 @@ class DatabaseReader
 
     /**
      * @param Request $request
-     * @return array
+     * @return Table[]
      * @author Soner Sayakci <shyim@posteo.de>
      */
     public function buildSchema(Request $request): array

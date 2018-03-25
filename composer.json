@@ -20,5 +20,13 @@
     "psr-4": {
       "Shyim\\DatabaseEntitiesBuilder\\": "src"
     }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "DatabaseEntitiesBuilder\\Models\\": "tests/generated"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^6"
   }
 }
