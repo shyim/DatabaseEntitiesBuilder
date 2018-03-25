@@ -1,5 +1,7 @@
 # Database Entities Generator
 
+[![Build Status](https://travis-ci.org/shyim/DatabaseEntitiesBuilder.svg?branch=master)](https://travis-ci.org/shyim/DatabaseEntitiesBuilder)
+
 This package generates simple entities, repository and service from a mysql database schema.
 
 ## Pro
