@@ -12,6 +12,6 @@ if [ -z "$DB_HOST" ]; then
     export DB_NAME=${DB_NAME}
 fi
 
-./prepareDatabase.sh $DB_HOST $DB_USER $DB_PASSWORD $DB_NAME
+./prepareDatabase.sh
 
 php ../vendor/bin/phpunit -c .

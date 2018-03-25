@@ -1,0 +1,32 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+
+sudo: false
+
+services:
+  - mysql
+
+env:
+  global:
+    - DB_HOST=localhost
+    - DB_USER=travis
+    - DB_PASSWORD=
+    - DB_NAME=builder
+
+cache:
+   directories:
+     - ${HOME}/.composer/cache/files
+
+before_install:
+  - mysql -e 'CREATE DATABASE builder;'
+
+install:
+  - composer install
+
+script:
+  - chmod +x ./tests/runTest.sh
+  - chmod +x ./tests/prepareDatabase.sh
+  - cd tests && ./runTest.sh
